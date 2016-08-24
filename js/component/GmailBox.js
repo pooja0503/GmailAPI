@@ -1,10 +1,11 @@
 var React = require('react');
 var LeftPanel=require('./LeftPanel');
+var RightPanel=require('./RightPanel');
 var loadedData = false;
 var GmailBox = React.createClass({
  getInitialState: function()
    {
-     return({allLabelsData:[]});
+     return({allLabelsData:[],allMessageIds:[],completeMessages:[]});
    },
  gmailLogin: function()
  {
@@ -56,6 +57,7 @@ var GmailBox = React.createClass({
 
  allLabels: function()
  {
+     console.log('Before:' + loadedData);
      var accessToken = localStorage.getItem('gToken');
      $.ajax({
       url: 'https://www.googleapis.com/gmail/v1/users/me/labels?key={AIzaSyACK1EveB40U-ec0aHfe6xKlN-BltiJGG8}',
@@ -67,8 +69,8 @@ var GmailBox = React.createClass({
       },
       success: function(data)
       {
-        this.setState({allLabelsData:data.labels});
         loadedData=true;
+        this.setState({allLabelsData:data.labels});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(err.toString());
@@ -77,15 +79,70 @@ var GmailBox = React.createClass({
 
  },
 
+ getEmailByLabel: function(labelId)
+ {
+   var accToken=localStorage.getItem('gToken');
+   $.ajax({
+     url:'https://www.googleapis.com/gmail/v1/users/me/messages?includeSpamTrash=false&labelIds='+labelId+'&maxResults=7&key={AIzaSyACK1EveB40U-ec0aHfe6xKlN-BltiJGG8}',
+     dataType:'json',
+     type:'GET',
+     beforeSend:function(request)
+     {
+       request.setRequestHeader("Authorization", "Bearer "+accToken);
+     },
+     success:function(data)
+     {
+       var messg=[];
+       this.setState({allMessageIds:data.messages});
+       for(var i=0;i<data.messages.length;i++)
+       {
+         messg.push(this.getCompleteMessage(data.messages[i].id));
+       }
+       //console.log(messg);
+       this.setState({completeMessages:messg});
+     }.bind(this),
+     error:function(xhr, status, err)
+     {
+       console.error(err.toString());
+     }.bind(this)
+   });
+ },
+
+ getCompleteMessage: function(id)
+ {
+   var accToken=localStorage.getItem('gToken');
+   var d=$.ajax({
+     url:'https://www.googleapis.com/gmail/v1/users/me/messages/'+id+'?key={AIzaSyACK1EveB40U-ec0aHfe6xKlN-BltiJGG8}',
+     dataType:'json',
+     type:'GET',
+     async:false,
+     beforeSend:function(request)
+     {
+       request.setRequestHeader("Authorization","Bearer "+accToken);
+     },
+     success:function(data)
+     {
+       //console.log(data);
+     }.bind(this),
+     error:function(xhr,status,err)
+     {
+       console.error(err.toString());
+     }.bind(this)
+   }).responseJSON;
+   //console.log(d);
+   return d;
+ },
 
  render:function()
  {
    var leftPanel;
    var rightPanel;
-
+   console.log('inside rendor...');
+   console.log(loadedData);
    if(loadedData){
-     leftPanel =  <LeftPanel allLabelsData={this.state.allLabelsData}/>
-     rightPanel='  Work In Progress..........';
+     console.log(loadedData);
+     leftPanel =  <LeftPanel allLabelsData={this.state.allLabelsData} getEmailByLabel={this.getEmailByLabel}/>
+     rightPanel=  <RightPanel completeMessages={this.state.completeMessages}/>;
    }
 
      return(
@@ -100,12 +157,16 @@ var GmailBox = React.createClass({
                   </div>
               </div>
                <div className="row">
-                 <div className="col-lg-2">
-                    {leftPanel}
-                  </div>
-                 <div className="col-lg-10">
-                 {rightPanel}
-                 </div>
+                   <div className="col-lg-3">
+                      <ul className="list-group">
+                        {leftPanel}
+                      </ul>
+                    </div>
+                   <div className="col-lg-9">
+                      <div className="list-group">
+                        {rightPanel}
+                      </div>
+                   </div>
                </div>
          </div>
      </div>

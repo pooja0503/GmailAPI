@@ -12,3 +12,11 @@
   background-color: white;
   border-color: white;
 }
+div
+{
+  word-wrap: break-word;
+}
+.col-lg-3 ul li
+{
+  text-align: center;
+}
