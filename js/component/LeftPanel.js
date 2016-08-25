@@ -1,5 +1,6 @@
 var React=require('react');
 var LabelComponent=require('./LabelComponent');
+var ComposeMessage=require('./ComposeMessage');
 
 var LeftPanel=React.createClass({
   handleGetEmail:function(labelId)
@@ -20,6 +21,8 @@ var LeftPanel=React.createClass({
       //console.log(target);
       return(
         <div>
+          <ComposeMessage />
+          <br/>
           {target}
         </div>
       );

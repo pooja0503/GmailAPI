@@ -2,11 +2,25 @@ var React=require('react');
 var ModalMessage=require('./ModalMessage');
 
 var Message=React.createClass({
+  getInitialState:function()
+  {
+    return({showModal:false});
+  },
+  handleModal:function()
+  {
+    var that=this;
+    console.log("Clicked");
+    that.setState({showModal:true});
+    that.state.showModal=true;
+
+    console.log("State:"+that.state.showModal);
+  },
   render:function()
   {
+    var self=this;
     return(
       <div>
-        <a href="#" className="list-group-item list-group-item-warning" data-toggle="modal" data-target="#myModal">
+        <a href="#myModalMessageDetail" className="list-group-item list-group-item-warning" data-toggle="modal" onClick={this.handleModal}>
           <div className="row">
             <div className="col-lg-4">
                 {this.props.frm}
@@ -15,11 +29,11 @@ var Message=React.createClass({
               {this.props.subject}
             </div>
             <div className="col-lg-3">
-              {this.props.date}
+              {this.props.date}{this.state.showModal}
             </div>
           </div>
         </a>
-        <ModalMessage />
+        {self.state.showModal?<ModalMessage frm={this.props.frm} to={this.props.to} subject={this.props.subject} body={this.props.body}/>:null}
       </div>
     );
   }

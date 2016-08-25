@@ -5,7 +5,7 @@ var loadedData = false;
 var GmailBox = React.createClass({
  getInitialState: function()
    {
-     return({allLabelsData:[],allMessageIds:[],completeMessages:[]});
+     return({allLabelsData:[],completeMessages:[]});
    },
  gmailLogin: function()
  {
@@ -93,7 +93,6 @@ var GmailBox = React.createClass({
      success:function(data)
      {
        var messg=[];
-       this.setState({allMessageIds:data.messages});
        for(var i=0;i<data.messages.length;i++)
        {
          messg.push(this.getCompleteMessage(data.messages[i].id));
@@ -150,7 +149,7 @@ var GmailBox = React.createClass({
            <div className="container-fluid">
              <div className="row">
                  <div className="col-lg-1">
-                  <button id="authorize-button" onClick={this.gmailLogin} className="btn btn-primary pull-left">SignIn</button>
+                  <button id="authorize-button" onClick={this.gmailLogin} className="btn btn-primary pull-left">SignIn123</button>
                   </div>
                   <div className="col-lg-8 pull-right">
                     <h2>ReactMails</h2>

@@ -25,7 +25,7 @@ var RightPanel=React.createClass({
               }
               body = d.payload.body.data;
               return(
-                <Message frm={frm} subject={subject} date={date} to={to} body={body}/>
+                    <Message frm={frm} subject={subject} date={date} to={to} body={body}/>
               );
             });
     return(
