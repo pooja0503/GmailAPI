@@ -3,7 +3,6 @@ var React=require('react');
 var LabelComponent=React.createClass({
   handleClick:function()
   {
-    console.log('Inside MessageComponent');
     this.props.handleGetEmail(this.props.id);
   },
   render:function()

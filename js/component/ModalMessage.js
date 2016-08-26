@@ -1,8 +1,18 @@
 var React=require('react');
+var encodedBody="";
 
 var ModalMessage=React.createClass({
+  appendPre: function(message)
+  {
+   var iFrameNode = this.refs.myIframe;
+   frameDoc = iFrameNode.contentWindow.document;
+   frameDoc.write(message);
+  },
   render:function()
   {
+    encodedBody = (this.props.body).replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+    encodedBody = decodeURIComponent(escape(window.atob(encodedBody)));
+    console.log(encodedBody);
     return(
       <div aria-hidden="true" id="myModalMessageDetail" className="modal fade" tabIndex="-1" aria-labelledby="myModalLabel" role="dialog">
         <div className="modal-dialog">
@@ -38,7 +48,8 @@ var ModalMessage=React.createClass({
               </div>
               <div className="panel panel-default">
                 <div className="panel-body">
-                  {this.props.body}
+                  <iframe id="iframe-message" ref="myIframe" >
+                  </iframe>
                 </div>
               </div>
             </div>
@@ -49,6 +60,10 @@ var ModalMessage=React.createClass({
         </div>
       </div>
     );
+  },
+  componentDidMount:function()
+  {
+    this.appendPre(encodedBody);
   }
 });
 module.exports=ModalMessage

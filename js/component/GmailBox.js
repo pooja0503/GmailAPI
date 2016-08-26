@@ -57,7 +57,6 @@ var GmailBox = React.createClass({
 
  allLabels: function()
  {
-     console.log('Before:' + loadedData);
      var accessToken = localStorage.getItem('gToken');
      $.ajax({
       url: 'https://www.googleapis.com/gmail/v1/users/me/labels?key={AIzaSyACK1EveB40U-ec0aHfe6xKlN-BltiJGG8}',
@@ -128,7 +127,6 @@ var GmailBox = React.createClass({
        console.error(err.toString());
      }.bind(this)
    }).responseJSON;
-   //console.log(d);
    return d;
  },
 
@@ -139,7 +137,6 @@ var GmailBox = React.createClass({
    console.log('inside rendor...');
    console.log(loadedData);
    if(loadedData){
-     console.log(loadedData);
      leftPanel =  <LeftPanel allLabelsData={this.state.allLabelsData} getEmailByLabel={this.getEmailByLabel}/>
      rightPanel=  <RightPanel completeMessages={this.state.completeMessages}/>;
    }
@@ -149,7 +146,7 @@ var GmailBox = React.createClass({
            <div className="container-fluid">
              <div className="row">
                  <div className="col-lg-1">
-                  <button id="authorize-button" onClick={this.gmailLogin} className="btn btn-primary pull-left">SignIn123</button>
+                  <button id="authorize-button" onClick={this.gmailLogin} className="btn btn-primary pull-left">SignIn</button>
                   </div>
                   <div className="col-lg-8 pull-right">
                     <h2>ReactMails</h2>

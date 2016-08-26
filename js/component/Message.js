@@ -13,7 +13,7 @@ var Message=React.createClass({
     that.setState({showModal:true});
     that.state.showModal=true;
 
-    console.log("State:"+that.state.showModal);
+    //console.log("State:"+that.state.showModal);
   },
   render:function()
   {

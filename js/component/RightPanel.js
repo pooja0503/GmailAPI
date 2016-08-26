@@ -2,6 +2,24 @@ var React=require('react');
 var Message=require('./Message');
 
 var RightPanel=React.createClass({
+  getHTMLPart: function(arr)
+  {
+    for(var x = 0; x < arr.length; x++)
+    {
+      if(typeof arr[x].parts === 'undefined')
+      {
+        if(arr[x].mimeType === 'text/html')
+        {
+          return arr[x].body.data;
+        }
+      }
+      else
+      {
+        return this.getHTMLPart(arr[x].parts);
+      }
+    }
+    return '';
+  },
   render:function()
   {
     var frm='';
@@ -9,9 +27,11 @@ var RightPanel=React.createClass({
     var date='';
     var to='';
     var body='';
-    console.log(this.props.completeMessages);
+    var that=this;
+
     var messages=this.props.completeMessages.map(function(d,i)
             {
+
               for(var i=0;i<d.payload.headers.length;i++)
               {
                 if(d.payload.headers[i].name==='From')
@@ -23,7 +43,15 @@ var RightPanel=React.createClass({
                 if(d.payload.headers[i].name==='To')
                   to = d.payload.headers[i].value;
               }
-              body = d.payload.body.data;
+              if(typeof d.payload.parts=='undefined')
+              {
+                body=d.payload.body.data;
+              }
+              else
+              {
+                body=that.getHTMLPart(d.payload);
+                console.log(body);
+              }
               return(
                     <Message frm={frm} subject={subject} date={date} to={to} body={body}/>
               );
