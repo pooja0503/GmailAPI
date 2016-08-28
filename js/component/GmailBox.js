@@ -129,7 +129,55 @@ var GmailBox = React.createClass({
    }).responseJSON;
    return d;
  },
+ sendMessage:function(to,sub,body)
+ {
+   if(to=='')
+   {
+     alert("Please specify the receiver's address");
+   }
+   else if(body=='')
+   {
+     alert("Body can't be left blank");
+   }
+   else
+   {
+       var accToken=localStorage.getItem('gToken');
+       var email = '';
+       var Headers = {'To':to,'Subject':sub};
+       for(var key in Headers)
+       {
+         email += key += ": "+Headers[key]+"\r\n";
+         console.log("email---"+email);
+         console.log("header---"+key);
+         console.log("Headers[header]---"+Headers[key]);
+       }
+       email += "\r\n" + body;
+       console.log("constructed email: " +email);
+       var encodedMessage =  window.btoa(email).replace(/\+/g, '-').replace(/\//g, '_');
+       console.log("encoded email:" + encodedMessage);
 
+       $.ajax({
+         url:'https://www.googleapis.com/gmail/v1/users/pooja.pandeya123%40gmail.com/messages/send?key={AIzaSyACK1EveB40U-ec0aHfe6xKlN-BltiJGG8}',
+         dataType:'json',
+         contentType: "application/json",
+         type:'POST',
+         data:JSON.stringify({'raw':encodedMessage}),
+         beforeSend:function(request)
+         {
+           request.setRequestHeader("Authorization","Bearer "+accToken);
+         },
+         success:function(data)
+         {
+           console.log("Success");
+         }.bind(this),
+         async: false,
+         error:function(xhr,status,err)
+         {
+           console.error(err.toString());
+         }.bind(this)
+        });
+   }
+ },
  render:function()
  {
    var leftPanel;
@@ -137,7 +185,7 @@ var GmailBox = React.createClass({
    console.log('inside rendor...');
    console.log(loadedData);
    if(loadedData){
-     leftPanel =  <LeftPanel allLabelsData={this.state.allLabelsData} getEmailByLabel={this.getEmailByLabel}/>
+     leftPanel =  <LeftPanel allLabelsData={this.state.allLabelsData} getEmailByLabel={this.getEmailByLabel} sendMessage={this.sendMessage}/>
      rightPanel=  <RightPanel completeMessages={this.state.completeMessages}/>;
    }
 

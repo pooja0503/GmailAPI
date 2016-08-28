@@ -3,6 +3,10 @@ var LabelComponent=require('./LabelComponent');
 var ComposeMessage=require('./ComposeMessage');
 
 var LeftPanel=React.createClass({
+  handleSendMessage:function(to,sub,body)
+  {
+    this.props.sendMessage(to,sub,body);
+  },
   handleGetEmail:function(labelId)
   {
     console.log('Inside LabelComponent');
@@ -21,7 +25,7 @@ var LeftPanel=React.createClass({
       //console.log(target);
       return(
         <div>
-          <ComposeMessage />
+          <ComposeMessage handleSendMessage={this.handleSendMessage}/>
           <br/>
           {target}
         </div>
